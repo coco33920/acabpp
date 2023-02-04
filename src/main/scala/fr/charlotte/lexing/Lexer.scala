@@ -13,10 +13,22 @@ class Lexer(input: String) {
   var currentPos = 0;
   var token: mutable.ArrayBuffer[Token] = mutable.ArrayBuffer.empty[Token];
 
+  def lexOperator(nextChar: Char, tokenStartPos: Int): Boolean =
+    if nextChar == '+' then
+      token += Token(Token.Type.PLUS,"+",tokenStartPos)
+      currentPos += 1
+      true
+    else if nextChar == '@' then
+      token += Token(Token.Type.LF, "@", tokenStartPos)
+      currentPos += 1
+      true
+    else
+      false
+
   def lexString(nextChar: Char, tokenStartPos: Int): Boolean =
-    if isAnAllowedCharacter(nextChar) then
+    if nextChar.isLetterOrDigit then
       var text = ""
-      while currentPos < input.length && (isAnAllowedCharacter(input(currentPos))) do
+      while currentPos < input.length && (input(currentPos).isLetterOrDigit) do
         text += input(currentPos)
         currentPos += 1
       val tpe = Token.stringToToken(text)
@@ -32,6 +44,7 @@ class Lexer(input: String) {
 
       if nextChar.isWhitespace then
         currentPos += 1
+      else if lexOperator(nextChar,tokenStartPos) then ()
       else if lexString(nextChar,tokenStartPos) then ()
       else
         throw new RuntimeException("Lexing error")
