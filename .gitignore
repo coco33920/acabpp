@@ -35,6 +35,7 @@ build/
 .vscode/
 .idea/
 .idea/*
+.bsp/
 
 ### Mac OS ###
 .DS_Store
